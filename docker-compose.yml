@@ -1,0 +1,23 @@
+services:
+  mysql:
+    image: mysql:9.3
+    restart: always
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - ./data/mysql:/var/lib/mysql
+    environment:
+      TZ: Asia/Jakarta
+      MYSQL_ROOT_PASSWORD: yu6queith2ooY6ah
+    ports:
+      - 127.0.0.1:3306:3306
+  postgres:
+    image: postgres:17.5
+    restart: always
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - ./data/postgres:/var/lib/postgresql/data
+    environment:
+      TZ: Asia/Jakarta
+      POSTGRES_PASSWORD: yu6queith2ooY6ah
+    ports:
+      - 127.0.0.1:5432:5432
