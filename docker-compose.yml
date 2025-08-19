@@ -7,6 +7,7 @@ services:
       - ./data/mysql:/var/lib/mysql
     environment:
       TZ: Asia/Jakarta
+      # for local dev purposes, doesn't matter if we expose the root password here
       MYSQL_ROOT_PASSWORD: yu6queith2ooY6ah
     ports:
       - 127.0.0.1:3306:3306
@@ -18,6 +19,7 @@ services:
       - ./data/postgres:/var/lib/postgresql/data
     environment:
       TZ: Asia/Jakarta
+      # for local dev purposes, doesn't matter if we expose the admin password here
       POSTGRES_PASSWORD: yu6queith2ooY6ah
     ports:
       - 127.0.0.1:5432:5432
