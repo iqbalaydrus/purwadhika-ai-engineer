@@ -1,6 +1,6 @@
 services:
   mysql:
-    image: mysql:9.3
+    image: mysql:8.0
     restart: always
     volumes:
       - /etc/localtime:/etc/localtime
