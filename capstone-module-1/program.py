@@ -21,10 +21,13 @@ def read_input[T](prompt: str, target_type: Type[T]) -> T:
         return read_input(prompt, target_type)
 
 
-def read_data() -> pd.DataFrame:
+def read_data(stmt=None, params=None) -> pd.DataFrame:
+    if stmt is None:
+        stmt = "select * from transactions"
     return pd.read_sql(
-        "select * from transactions",
+        stmt,
         db_url,
+        params=params,
         parse_dates={"transaction_date": {"format": "%Y-%m-%d"}},
         index_col="tx_id",
     )
@@ -80,10 +83,50 @@ class Choice:
             return self.action()
 
 
+class AllColumns(StrEnum):
+    tx_id = "tx_id"
+    customer_id = "customer_id"
+    store_name = "store_name"
+    transaction_date = "transaction_date"
+    aisle = "aisle"
+    product_name = "product_name"
+    quantity = "quantity"
+    unit_price = "unit_price"
+    total_amount = "total_amount"
+    discount_amount = "discount_amount"
+    final_amount = "final_amount"
+    loyalty_points = "loyalty_points"
+    empty = ""
+
+
+class Operator(StrEnum):
+    eq = "="
+    ne = "!="
+    lt = "<"
+    lte = "<="
+    gt = ">"
+    gte = ">="
+
+
 class ReadTable(Choice):
     def action(self):
         max_rows = read_input("Enter max rows: ", int)
-        df = read_data()
+        col_name = read_input(
+            f"Enter column name to filter, empty to retrieve all [{'/'.join(AllColumns)}]: ",
+            AllColumns,
+        )
+        if col_name == AllColumns.empty:
+            stmt = "select * from transactions"
+            params = None
+        else:
+            op = read_input(
+                f"Enter operation [{'/'.join(Operator)}]: ",
+                Operator,
+            )
+            val = read_input("Enter value to filter: ", str)
+            stmt = f"select * from transactions where {col_name.value} {op.value} %(filter_val)s"
+            params = {"filter_val": val}
+        df = read_data(stmt=stmt, params=params)
         print(df.to_string(max_rows=max_rows))
 
 
