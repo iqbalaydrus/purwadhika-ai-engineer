@@ -211,7 +211,7 @@ class VisCategory(Choice):
         plt.show()
 
 
-class HistogramCols(StrEnum):
+class NumericalCols(StrEnum):
     quantity = "quantity"
     unit_price = "unit_price"
     total_amount = "total_amount"
@@ -223,11 +223,52 @@ class HistogramCols(StrEnum):
 class VisHistogram(Choice):
     def action(self):
         col_name = read_input(
-            f"Enter column name [{'/'.join(HistogramCols)}]: ",
-            HistogramCols,
+            f"Enter column name [{'/'.join(NumericalCols)}]: ",
+            NumericalCols,
         )
         df = read_data()
         df[col_name].plot.hist()
+        plt.tight_layout()
+        plt.show()
+
+
+class TimeseriesCols(StrEnum):
+    quantity = "quantity"
+    total_amount = "total_amount"
+    discount_amount = "discount_amount"
+    final_amount = "final_amount"
+    loyalty_points = "loyalty_points"
+
+
+class TimeseriesInterval(StrEnum):
+    daily = "daily"
+    weekly = "weekly"
+    monthly = "monthly"
+
+
+class VisTimeseries(Choice):
+    def action(self):
+        col_name = read_input(
+            f"Enter column name [{'/'.join(TimeseriesCols)}]: ",
+            TimeseriesCols,
+        )
+        interval = read_input(
+            f"Enter time interval [{'/'.join(TimeseriesInterval)}]: ",
+            TimeseriesInterval,
+        )
+        if interval == TimeseriesInterval.daily:
+            grouper = pd.Grouper("transaction_date", freq="D")
+        elif interval == TimeseriesInterval.weekly:
+            grouper = pd.Grouper("transaction_date", freq="W")
+        elif interval == TimeseriesInterval.monthly:
+            grouper = pd.Grouper("transaction_date", freq="MS")
+        else:
+            print(f"Not a valid {interval}.")
+        df = read_data()
+        agg_info = {col_name.value: (col_name.value, "sum")}
+        df = df.groupby("transaction_date").agg(**agg_info)
+        df = df.groupby(grouper).agg(**agg_info)
+        df.plot.line(y=col_name.value)
         plt.tight_layout()
         plt.show()
 
@@ -284,6 +325,7 @@ def main():
                         choices=[
                             VisCategory(description="Categorical visualization"),
                             VisHistogram(description="Histogram visualization"),
+                            VisTimeseries(description="Timeseries visualization"),
                         ],
                     ),
                 ),
