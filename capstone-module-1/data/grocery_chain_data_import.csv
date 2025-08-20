@@ -1,0 +1,4 @@
+customer_id,store_name,transaction_date,aisle,product_name,quantity,unit_price,total_amount,discount_amount,final_amount,loyalty_points
+1122,Sound Horeg Corp,2023-08-26,Speaker,JBL,2,7.46,14.92,0.0,14.92,377
+2233,Sound Horeg Corp,2024-02-13,Subwoofer,SVS,1,1.85,1.85,3.41,-1.56,111
+3344,Sound Horeg Corp,2023-11-23,Cable,Canare,4,7.38,29.52,4.04,25.48,301

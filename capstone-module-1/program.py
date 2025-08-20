@@ -260,6 +260,16 @@ class AddData(Choice):
             conn.commit()
 
 
+class ImportData(Choice):
+    def action(self):
+        csv_path = read_input("Enter csv file path: ", str)
+        df = pd.read_csv(csv_path)
+        engine = sa.create_engine(db_url)
+        with engine.connect() as conn:
+            df.to_sql("transactions", conn, if_exists="append", index=False)
+            conn.commit()
+
+
 def main():
     menu = Choice(
         sub_choice=SubChoice(
@@ -278,6 +288,7 @@ def main():
                     ),
                 ),
                 AddData(description="Add new transaction"),
+                ImportData(description="Import transactions from local csv file"),
             ],
         ),
     )
