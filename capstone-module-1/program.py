@@ -132,12 +132,12 @@ class ReadTable(Choice):
 
 class StatType(StrEnum):
     mean = "mean"
-    p25 = "p25"
-    p50 = "p50"
-    p75 = "p75"
-    std = "std"
-    min = "min"
-    max = "max"
+    p25 = "p25"  # extra
+    p50 = "p50"  # extra
+    p75 = "p75"  # extra
+    std = "std"  # extra
+    min = "min"  # extra
+    max = "max"  # extra
 
 
 class StatCols(StrEnum):
