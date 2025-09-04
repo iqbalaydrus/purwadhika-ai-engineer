@@ -6,7 +6,7 @@
   - Options
   - Engine size
     - Probably not always the case, it's the delivered power that matters, we're still missing
-      data like turbo, awd/fwd/rwd, even better if we have the horsepower data
+      data like turbo, hybrid, awd/fwd/rwd, even better if we have the horsepower data
 - Now we're talking about price depreciation. It's always correlated by demand. And demand will usually
   correlate to:
   - Car's maker -> reputable brands will hold the price better than less known/new brands
