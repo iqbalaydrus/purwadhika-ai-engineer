@@ -15,7 +15,7 @@
   - Year & Mileage -> consumers will always prefer used car that feels new
 - The rest of the features probably doesn't determine its price, these are:
   - Region
-  - Origin. But we'll see 
+  - Origin
 - Zero price isn't useful at all, we'll take that out
 
 # Business Use Case
