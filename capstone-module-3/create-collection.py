@@ -1,3 +1,4 @@
+import json
 import os
 
 import pandas as pd
@@ -45,6 +46,16 @@ vector_client = QdrantClient(
 vector_client.create_collection(
     collection_name=QDRANT_COLLECTION_NAME,
     vectors_config=qm.VectorParams(size=1536, distance=qm.Distance.COSINE),
+)
+vector_client.create_payload_index(
+    collection_name=QDRANT_COLLECTION_NAME,
+    field_name="metadata.id",
+    field_schema="integer",
+)
+vector_client.create_payload_index(
+    collection_name=QDRANT_COLLECTION_NAME,
+    field_name="metadata.category",
+    field_schema="keyword",
 )
 vector_db = QdrantVectorStore(
     client=vector_client,
