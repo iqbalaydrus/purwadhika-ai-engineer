@@ -15,12 +15,13 @@ from qdrant_client.http import models as qm
 load_dotenv()
 QDRANT_COLLECTION_NAME = "cv_resume"
 
-data = pd.read_csv("data/Resume.csv").drop("Resume_html", axis=1)
+data = pd.read_csv("data/Resume.csv")
 docs: list[Document] = []
 for _, row in data.iterrows():
     metadata = {
         "id": int(row["ID"]),
         "category": str(row["Category"]),
+        "cv_html": str(row["Resume_html"]),
     }
     docs.append(
         Document(
