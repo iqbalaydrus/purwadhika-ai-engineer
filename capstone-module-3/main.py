@@ -7,14 +7,14 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# QDRANT_URL = st.secrets["QDRANT_URL"]
-# QDRANT_API_KEY = st.secrets["QDRANT_API_KEY"]
-# OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
-# DISCORD_CHANNEL_NAME = st.secrets["DISCORD_CHANNEL_NAME"]
-QDRANT_URL = os.getenv("QDRANT_URL")
-QDRANT_API_KEY = os.getenv("QDRANT_API_KEY")
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-DISCORD_CHANNEL_NAME = os.getenv("DISCORD_CHANNEL_NAME")
+QDRANT_URL = st.secrets["QDRANT_URL"]
+QDRANT_API_KEY = st.secrets["QDRANT_API_KEY"]
+OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
+DISCORD_CHANNEL_NAME = st.secrets["DISCORD_CHANNEL_NAME"]
+# QDRANT_URL = os.getenv("QDRANT_URL")
+# QDRANT_API_KEY = os.getenv("QDRANT_API_KEY")
+# OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+# DISCORD_CHANNEL_NAME = os.getenv("DISCORD_CHANNEL_NAME")
 
 _ = """
 TODO: Create a skill summary for each category/industry:
@@ -46,9 +46,8 @@ def main_program():
         from langchain_qdrant import QdrantVectorStore
         from langchain.tools import tool
         from langchain.schema import Document
-        from langgraph.prebuilt import create_react_agent
         from langchain_core.messages import ToolMessage
-        from langchain_community.document_loaders import PyPDFLoader
+        from langgraph.prebuilt import create_react_agent
         from qdrant_client import models
 
         llm = ChatOpenAI(model="gpt-5-nano", api_key=OPENAI_API_KEY)
@@ -156,7 +155,39 @@ def main_program():
                             tool_messages.append(message.content)
                     st.code(tool_messages)
         elif option == "Applicant":
-            prompt = st.chat_input("Ask me recipes question")
+            if uploaded_file := st.file_uploader("Upload your CV"):
+                import tempfile
+                from langchain_community.document_loaders import PyPDFLoader
+
+                with tempfile.NamedTemporaryFile(suffix=".pdf") as tmp_file:
+                    tmp_file.write(uploaded_file.read())
+                    tmp_file.flush()
+                    loader = PyPDFLoader(tmp_file.name)
+                    docs = loader.load()
+                st.session_state.messages.append(
+                    {"role": "user", "content": docs[0].page_content}
+                )
+                with st.chat_message("user"):
+                    st.markdown("Uploaded file: {}".format(uploaded_file.name))
+                agent = create_react_agent(
+                    model=llm,
+                    tools=tools,
+                    prompt="You will help an Applicant to decide which category he's best applying to. The Applicant will provide you with his CV.",
+                )
+                # 20 messages might be too big since PDF might contain a lot of words
+                result = agent.invoke(
+                    {"messages": st.session_state.messages[-20:]}  # noqa
+                )
+                answer = result["messages"][-1].content
+                st.session_state.messages.append({"role": "ai", "content": answer})
+                with st.chat_message("ai"):
+                    st.markdown(answer)
+                with st.expander("**Tool Calls:**"):
+                    tool_messages = []
+                    for message in result["messages"]:
+                        if isinstance(message, ToolMessage):
+                            tool_messages.append(message.content)
+                    st.code(tool_messages)
 
 
 st.title("Smart CV Reviewer")
