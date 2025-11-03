@@ -4,16 +4,12 @@ DISCORD_CHANNEL_NAME = st.secrets["DISCORD_CHANNEL_NAME"]
 
 
 def classify_image(image):
-    import os
-
-    st.write(os.getcwd())
-
     from ultralytics import YOLO
     from PIL import Image
     import supervision as sv
     from collections import Counter
 
-    model = YOLO("training/best.pt")
+    model = YOLO("capstone-module-4/training/best.pt")
     image = Image.open(image)
     result = model.predict(image, verbose=False)[0]
     detection = sv.Detections.from_ultralytics(result).with_nms()
