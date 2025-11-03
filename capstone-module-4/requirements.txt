@@ -1,4 +1,4 @@
-opencv-contrib-python-headless
 ultralytics==8.3.223
 supervision==0.26.1
 streamlit==1.51.0
+opencv-python-headless
