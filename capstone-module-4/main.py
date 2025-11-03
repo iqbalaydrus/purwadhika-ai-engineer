@@ -4,6 +4,10 @@ DISCORD_CHANNEL_NAME = st.secrets["DISCORD_CHANNEL_NAME"]
 
 
 def classify_image(image):
+    import os
+
+    st.write(os.getcwd())
+
     from ultralytics import YOLO
     from PIL import Image
     import supervision as sv
